@@ -21,11 +21,15 @@ void Game::UpdateGame() {
 }
 
 void Game::GenerateOutput() {
+	SDL_SetRenderDrawColor(mRenderer, 0, 0, 255, 255); //Set the drawing color
+	SDL_RenderClear(mRenderer); // clear the back buffer and paint with drawing color
+	SDL_RenderPresent(mRenderer); //swap the front and back buffer
 }
 
 Game::Game() {
 	mWindow = nullptr;
 	mIsRunning = true;
+	mRenderer = nullptr;
 }
 
 bool Game::Initialize() {
@@ -48,6 +52,17 @@ bool Game::Initialize() {
 		return false;
 	}
 
+	mRenderer = SDL_CreateRenderer(mWindow,
+		-1,
+		SDL_RENDERER_ACCELERATED |
+		SDL_RENDERER_PRESENTVSYNC //enable v-sync
+	);
+
+	if (!mRenderer) {
+		SDL_Log("Failed to create renderer: %s", SDL_GetError());
+		return false;
+	}
+
 	return true; // success 
 }
 
@@ -60,6 +75,7 @@ void Game::RunLoop() {
 }
 
 void Game::Shutdown() {
+	SDL_DestroyRenderer(mRenderer);
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
 }

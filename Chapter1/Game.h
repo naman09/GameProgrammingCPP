@@ -17,12 +17,16 @@ class Game {
 	};
 
 public:
-	Vector2 mBallPos, mPaddlePos;
+	Vector2 mBallPos;
+	Vector2 mPaddlePos;
+	Vector2 mBallVel;
 	const int width = 800;
 	const int height = 600;
 	const int paddleWidth = 10;
 	const int paddleHeight = 50;
 	const int thickness = 15; //used for wall and ball
+	Uint32 mTicksCount;
+	int mPaddleDir;
 	Game();
 	bool Initialize();
 	void RunLoop();

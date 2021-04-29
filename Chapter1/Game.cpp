@@ -1,13 +1,17 @@
+#include <cmath>
 #include "Game.h"
 
 Game::Game() {
 	mWindow = nullptr;
 	mIsRunning = true;
 	mRenderer = nullptr;
-	mBallPos.x = 50;
-	mBallPos.y = 70;
-	mPaddlePos.x = 10;
-	mPaddlePos.y = 300;
+	mBallPos.x = 50.0f;
+	mBallPos.y = 70.0f;
+	mPaddlePos.x = 10.0f;
+	mPaddlePos.y = 300.0f;
+	mTicksCount = 0;
+	mBallVel.x = 200.0f;
+	mBallVel.y = 235.0f;
 }
 
 void Game::ProcessInput() {
@@ -20,14 +24,65 @@ void Game::ProcessInput() {
 				break;
 		}
 	}
-
 	const Uint8* state = SDL_GetKeyboardState(nullptr);
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		mIsRunning = false;
 	}
+	mPaddleDir = 0;
+	if (state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]) {
+		mPaddleDir -= 1;
+	}
+	if (state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]) {
+		mPaddleDir += 1;
+	}
 }
 
 void Game::UpdateGame() {
+	//wait until 16ms is elapsed (1frame in 1000ms/60)
+	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16));
+	float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
+	mTicksCount = SDL_GetTicks();
+	if (deltaTime > 0.05f) { //clamp the delta time
+		deltaTime = 0.05f;
+	}
+
+	//update paddle
+	if (mPaddleDir != 0) {
+		mPaddlePos.y += mPaddleDir * 300.0f * deltaTime; //300 is velocity
+
+		//prevent the paddle to go out of bounds
+		float lowerBound = thickness + (paddleHeight / 2.0f);
+		float upperBound = height - (paddleHeight / 2.0f) - thickness;
+		if (mPaddlePos.y < lowerBound) {
+			mPaddlePos.y = lowerBound;
+		}
+		if (mPaddlePos.y > upperBound) {
+			mPaddlePos.y = upperBound;
+		}
+	}
+
+	//update ball
+	mBallPos.x += mBallVel.x * deltaTime;
+	mBallPos.y += mBallVel.y * deltaTime;
+
+	if (mBallPos.y <= 3 * thickness / 2.0f && mBallVel.y < 0.0f) {
+		mBallVel.y = -mBallVel.y;
+	}
+	
+	if (mBallPos.y >= (height - 3 * thickness / 2.0f) && mBallVel.y > 0.0f) {
+		mBallVel.y = -mBallVel.y;
+	}
+	if (mBallPos.x >= (width - thickness) && mBallVel.x > 0.0f) {
+		mBallVel.x = -mBallVel.x;
+	}
+	if ((fabsf(mBallPos.x - mPaddlePos.x) <= (thickness + paddleWidth) / 2.0f) &&
+		(fabsf(mBallPos.y - mPaddlePos.y) <= (thickness + paddleHeight) / 2.0f) && 
+		mBallVel.x < 0.0f) {
+		mBallVel.x = -mBallVel.x;
+	}
+	if (mBallPos.x < 0) {
+		mIsRunning = false;
+	}
 }
 
 void Game::GenerateOutput() {

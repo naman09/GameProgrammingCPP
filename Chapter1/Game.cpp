@@ -1,5 +1,15 @@
 #include "Game.h"
 
+Game::Game() {
+	mWindow = nullptr;
+	mIsRunning = true;
+	mRenderer = nullptr;
+	mBallPos.x = 50;
+	mBallPos.y = 70;
+	mPaddlePos.x = 10;
+	mPaddlePos.y = 300;
+}
+
 void Game::ProcessInput() {
 	SDL_Event event;
 	//SDL event queue contain events recieved from OS 
@@ -23,13 +33,35 @@ void Game::UpdateGame() {
 void Game::GenerateOutput() {
 	SDL_SetRenderDrawColor(mRenderer, 0, 0, 255, 255); //Set the drawing color
 	SDL_RenderClear(mRenderer); // clear the back buffer and paint with drawing color
-	SDL_RenderPresent(mRenderer); //swap the front and back buffer
-}
+	
+	//Actual game scene drawing 
+	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
+	
+	SDL_Rect topWall{ 0, 0, width, thickness };
+	SDL_RenderFillRect(mRenderer, &topWall);
 
-Game::Game() {
-	mWindow = nullptr;
-	mIsRunning = true;
-	mRenderer = nullptr;
+	SDL_Rect rightWall{ width-thickness, 0, thickness, height };
+	SDL_RenderFillRect(mRenderer, &rightWall);
+
+	SDL_Rect bottomWall{ 0, height-thickness, width, thickness };
+	SDL_RenderFillRect(mRenderer, &bottomWall);
+
+	SDL_Rect ball{
+		static_cast<int>(mBallPos.x - thickness / 2),
+		static_cast<int>(mBallPos.y - thickness / 2),
+		thickness,
+		thickness
+	};
+	SDL_RenderFillRect(mRenderer, &ball);
+	
+	SDL_Rect paddle{
+		static_cast<int>(mPaddlePos.x - paddleWidth / 2),
+		static_cast<int>(mPaddlePos.y - paddleHeight / 2),
+		paddleWidth,
+		paddleHeight
+	};
+	SDL_RenderFillRect(mRenderer, &paddle);
+	SDL_RenderPresent(mRenderer); //swap the front and back buffer
 }
 
 bool Game::Initialize() {
@@ -42,8 +74,8 @@ bool Game::Initialize() {
 	mWindow = SDL_CreateWindow("Game Programming in c++ (chapter 1)", // window title
 		100, // Top left x-coord of window
 		100, // Top left y-coord of window
-		1024, // width
-		768, // height
+		width, // width
+		height, // height
 		0 // Flags (0 for no flag set)
 	);
 

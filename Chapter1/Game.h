@@ -18,15 +18,18 @@ class Game {
 
 public:
 	Vector2 mBallPos;
-	Vector2 mPaddlePos;
+	Vector2 mPaddleLeftPos;
+	int mPaddleLeftDir;
+	Vector2 mPaddleRightPos;
+	int mPaddleRightDir;
 	Vector2 mBallVel;
-	const int width = 800;
-	const int height = 600;
-	const int paddleWidth = 10;
-	const int paddleHeight = 50;
-	const int thickness = 15; //used for wall and ball
+	const int width{ 800 };
+	const int height{ 600 };
+	const int paddleWidth{ 10 };
+	const int paddleHeight{ 50 };
+	const int thickness{ 15 }; //used for wall and ball
 	Uint32 mTicksCount;
-	int mPaddleDir;
+	
 	Game();
 	bool Initialize();
 	void RunLoop();

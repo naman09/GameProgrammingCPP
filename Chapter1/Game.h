@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <SDL.h>
+#include <vector>
 
 class Game {
 	void ProcessInput();
@@ -16,8 +17,14 @@ class Game {
 		float y;
 	};
 
+	struct Ball {
+		Vector2 mBallPos;
+		Vector2 mBallVel;
+	};
+
 public:
-	Vector2 mBallPos;
+	std::vector<Ball> balls;
+	//Vector2 mBallPos;
 	Vector2 mPaddleLeftPos;
 	int mPaddleLeftDir;
 	Vector2 mPaddleRightPos;
@@ -26,7 +33,7 @@ public:
 	const int width{ 800 };
 	const int height{ 600 };
 	const int paddleWidth{ 10 };
-	const int paddleHeight{ 50 };
+	const int paddleHeight{ 100 };
 	const int thickness{ 15 }; //used for wall and ball
 	Uint32 mTicksCount;
 	

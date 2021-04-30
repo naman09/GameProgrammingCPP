@@ -1,21 +1,32 @@
 #include <cmath>
+#include <cstdlib>
 #include "Game.h"
 
 Game::Game() {
 	mWindow = nullptr;
 	mIsRunning = true;
 	mRenderer = nullptr;
-	mBallPos.x = 50.0f;
-	mBallPos.y = 70.0f;
+	mTicksCount = 0;
 	mPaddleLeftPos.x = 10.0f;
 	mPaddleLeftPos.y = 300.0f;
 	mPaddleRightPos.x = width - 10.0f;
 	mPaddleRightPos.y = 300.0f;
-	mTicksCount = 0;
-	mBallVel.x = 200.0f;
-	mBallVel.y = 235.0f;
 	mPaddleLeftDir = 0;
 	mPaddleRightDir = 0;
+	/*mBallPos.x = 50.0f;
+	mBallPos.y = 70.0f;
+	mBallVel.x = 200.0f;
+	mBallVel.y = 235.0f;*/
+	int rangeLeft = width / 4;
+	int rangeRight = width / 2;
+	for (int i = 0; i < 3; i++) {
+		Ball ball;
+		ball.mBallPos.x = static_cast<float>(rangeLeft + rand()%(rangeRight-rangeLeft));
+		ball.mBallPos.y = static_cast<float>(rand()%height);
+		ball.mBallVel.x = 100.0f;
+		ball.mBallVel.y = 135.0f;
+		balls.push_back(ball);
+	}
 }
 
 void Game::ProcessInput() {
@@ -59,7 +70,7 @@ void Game::UpdateGame() {
 
 	//update left paddle
 	if (mPaddleLeftDir != 0) {
-		mPaddleLeftPos.y += mPaddleLeftDir * 300.0f * deltaTime; //300 is velocity
+		mPaddleLeftPos.y += mPaddleLeftDir * 500.0f * deltaTime; //300 is velocity
 
 		//prevent the paddle to go out of bounds
 		float lowerBound = thickness + (paddleHeight / 2.0f);
@@ -74,7 +85,7 @@ void Game::UpdateGame() {
 
 	//update right paddle
 	if (mPaddleRightDir != 0) {
-		mPaddleRightPos.y += mPaddleRightDir * 300.0f * deltaTime; //300 is velocity
+		mPaddleRightPos.y += mPaddleRightDir * 500.0f * deltaTime; //300 is velocity
 
 		//prevent the paddle to go out of bounds
 		float lowerBound = thickness + (paddleHeight / 2.0f);
@@ -89,31 +100,36 @@ void Game::UpdateGame() {
 
 
 	//update ball
-	mBallPos.x += mBallVel.x * deltaTime;
-	mBallPos.y += mBallVel.y * deltaTime;
 
-	if (mBallPos.y <= 3 * thickness / 2.0f && mBallVel.y < 0.0f) { //top wall
-		mBallVel.y = -mBallVel.y;
+	for (Ball& ball : balls) {
+		ball.mBallPos.x += ball.mBallVel.x * deltaTime;
+		ball.mBallPos.y += ball.mBallVel.y * deltaTime;
+
+		if (ball.mBallPos.y <= 3 * thickness / 2.0f && ball.mBallVel.y < 0.0f) { //top wall
+			ball.mBallVel.y = -ball.mBallVel.y;
+		}
+		if (ball.mBallPos.y >= (height - 3 * thickness / 2.0f) && ball.mBallVel.y > 0.0f) { //bottom wall
+			ball.mBallVel.y = -ball.mBallVel.y;
+		}
+		//if (mBallPos.x >= (width - thickness) && mBallVel.x > 0.0f) { //right wall
+		//	mBallVel.x = -mBallVel.x;
+		//}
+		if ((fabsf(ball.mBallPos.x - mPaddleLeftPos.x) <= (thickness + paddleWidth) / 2.0f) &&
+			(fabsf(ball.mBallPos.y - mPaddleLeftPos.y) <= (thickness + paddleHeight) / 2.0f) &&
+			ball.mBallVel.x < 0.0f) { //ball left paddle collision
+			ball.mBallVel.x = -ball.mBallVel.x;
+		}
+		if ((fabsf(ball.mBallPos.x - mPaddleRightPos.x) <= (thickness + paddleWidth) / 2.0f) &&
+			(fabsf(ball.mBallPos.y - mPaddleRightPos.y) <= (thickness + paddleHeight) / 2.0f) &&
+			ball.mBallVel.x > 0.0f) { //ball right paddle collision
+			ball.mBallVel.x = -ball.mBallVel.x;
+		}
+		if (ball.mBallPos.x < 0 || ball.mBallPos.x > width) {
+			mIsRunning = false;
+		}
 	}
-	if (mBallPos.y >= (height - 3 * thickness / 2.0f) && mBallVel.y > 0.0f) { //bottom wall
-		mBallVel.y = -mBallVel.y;
-	}
-	//if (mBallPos.x >= (width - thickness) && mBallVel.x > 0.0f) { //right wall
-	//	mBallVel.x = -mBallVel.x;
-	//}
-	if ((fabsf(mBallPos.x - mPaddleLeftPos.x) <= (thickness + paddleWidth) / 2.0f) &&
-		(fabsf(mBallPos.y - mPaddleLeftPos.y) <= (thickness + paddleHeight) / 2.0f) && 
-		mBallVel.x < 0.0f) { //ball left paddle collision
-		mBallVel.x = -mBallVel.x;
-	}
-	if ((fabsf(mBallPos.x - mPaddleRightPos.x) <= (thickness + paddleWidth) / 2.0f) &&
-		(fabsf(mBallPos.y - mPaddleRightPos.y) <= (thickness + paddleHeight) / 2.0f) &&
-		mBallVel.x > 0.0f) { //ball right paddle collision
-		mBallVel.x = -mBallVel.x;
-	}
-	if (mBallPos.x < 0 || mBallPos.x > width) {
-		mIsRunning = false;
-	}
+
+	
 }
 
 void Game::GenerateOutput() {
@@ -132,13 +148,24 @@ void Game::GenerateOutput() {
 	SDL_Rect bottomWall{ 0, height-thickness, width, thickness };
 	SDL_RenderFillRect(mRenderer, &bottomWall);
 
-	SDL_Rect ball{
+	/*SDL_Rect ball{
 		static_cast<int>(mBallPos.x - thickness / 2),
 		static_cast<int>(mBallPos.y - thickness / 2),
 		thickness,
 		thickness
 	};
-	SDL_RenderFillRect(mRenderer, &ball);
+	SDL_RenderFillRect(mRenderer, &ball);*/
+
+	//draw all balls
+	for (Ball& ball : balls) {
+		SDL_Rect drawBall{
+		static_cast<int>(ball.mBallPos.x - thickness / 2),
+		static_cast<int>(ball.mBallPos.y - thickness / 2),
+		thickness,
+		thickness
+		};
+		SDL_RenderFillRect(mRenderer, &drawBall);
+	}
 	
 	SDL_Rect paddleLeft{
 		static_cast<int>(mPaddleLeftPos.x - paddleWidth / 2),

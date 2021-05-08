@@ -14,14 +14,28 @@ void Actor::Update(float deltaTime) {
 }
 
 void Actor::UpdateComponents(float deltaTime) {
+	for (auto& component : mComponents) {
+		component->Update(deltaTime);
+	}
 }
 
-void Actor::UpdateActor(float deltaTime) {
-}
+void Actor::UpdateActor(float deltaTime) {}
 
 void Actor::AddComponent(Component* component) {
+	int myUpdateOrder = component->GetUpdateOrder();
+	auto iter = mComponents.begin();
+	for (; iter != mComponents.end(); iter++) {
+		if ((*iter)->GetUpdateOrder() > myUpdateOrder) {
+			break;
+		}
+	}
+	mComponents.insert(iter, component);
 }
 
 void Actor::RemoveComponent(Component* component) {
+	while (!mComponents.size()) {
+		delete mComponents.back();
+		mComponents.pop_back();
+	}
 }
 

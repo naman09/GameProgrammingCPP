@@ -1,7 +1,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "Game.h"
-
+#include "Ship.h"
+#include "BGSpriteComponent.h"
 
 Game::Game() {
 	mIsRunning = true;
@@ -41,9 +42,7 @@ bool Game::Initialize() {
 		SDL_Log("Failed to create renderer: %s", SDL_GetError());
 		return false;
 	}
-	IMG_Init(IMG_INIT_PNG);
-
-
+	IMG_Init(IMG_INIT_PNG); //To use png images 
 	return true; // success 
 }
 
@@ -68,6 +67,31 @@ SDL_Texture* Game::GetTexture(const char* filename) {
 		mFileTextureMap[key] = LoadTexture(filename);
 	}
 	return mFileTextureMap[key];
+}
+
+void Game::LoadData() {
+	//Add a ship
+	Actor* ship = new Ship(this);
+	AddActor(ship);
+
+	Actor* genericActor = new Actor(this);
+
+	BGSpriteComponent* back = new BGSpriteComponent(genericActor, 50); //drawn before others 
+	BGSpriteComponent* back2 = new BGSpriteComponent(genericActor, 50);
+
+	//different scroll speed for parallax effect
+	back->SetScrollSpeed(10);
+	back2->SetScrollSpeed(20);
+
+	SDL_Texture* bg1Tex = GetTexture("Assets/Farback01.png");
+	SDL_Texture* bg2Tex = GetTexture("Assets/Farback02.png");
+
+	//SetTextures() -- ?
+	back->SetBGTextures({ bg1Tex });
+	back2->SetBGTextures({ bg2Tex });
+	
+	mSprites.push_back(back);
+	mSprites.push_back(back2);
 }
 
 void Game::Shutdown() {
@@ -117,9 +141,16 @@ void Game::UpdateGame() {
 	for (Actor*& actor : deadActors) {
 		delete actor;
 	}
+	for (auto& sprites : mSprites) {
+		sprites->Update(deltaTime);
+	}
 }
 
-void Game::GenerateOutput() {}
+void Game::GenerateOutput() {
+	for (auto& sprite : mSprites) {
+		sprite->Draw(mRenderer);
+	}
+}
 
 void Game::RunLoop() {
 	while (mIsRunning) {

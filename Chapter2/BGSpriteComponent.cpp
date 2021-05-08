@@ -12,6 +12,14 @@ void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 	}
 }
 
+BGSpriteComponent::BGSpriteComponent(Actor* owner, int drawOrder) 
+	: SpriteComponent(owner, drawOrder) {
+	mScreenSize.x = 100.0f; //TODO
+	mScreenSize.y = 200.0f; //TODO
+
+	mScrollSpeed = 10.0f;
+}
+
 void BGSpriteComponent::Update(float deltaTime) {
 	SpriteComponent::Update(deltaTime);
 	for (auto& bg : mBGTextures) {
@@ -22,4 +30,8 @@ void BGSpriteComponent::Update(float deltaTime) {
 			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
 		}
 	}
+}
+
+void BGSpriteComponent::Draw(SDL_Renderer* renderer) {
+
 }

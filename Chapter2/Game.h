@@ -11,6 +11,8 @@ class Game {
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
+	SDL_Texture* LoadTexture(const char* filename);
+
 	SDL_Window* mWindow;
 	bool mIsRunning;
 	bool mUpdatingActors;
@@ -19,11 +21,11 @@ class Game {
 	std::vector<Actor*> mPendingActors; //new actors are added here
 	std::vector<SpriteComponent*> mSprites;
 	std::unordered_map<std::string, SDL_Texture*> mFileTextureMap;
-	SDL_Texture* LoadTexture(const char* filename);
 public:
 	const int width{ 800 };
 	const int height{ 600 };
 	Uint32 mTicksCount;
+
 	Game();
 	bool Initialize();
 	void RunLoop();
@@ -32,5 +34,6 @@ public:
 	void RemoveActor(Actor* actor);
 	void AddSprite(SpriteComponent* sprite); //insert sprite in sorted draw order
 	SDL_Texture* GetTexture(const char* filename);
+	void LoadData();
 };
 #endif

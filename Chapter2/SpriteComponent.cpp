@@ -7,11 +7,16 @@ void SpriteComponent::SetTexture(SDL_Texture* texture) {
 
 double MathToDegrees(float angleRadians) {
 	double pi = acos(-1);
-	return angleRadians * 180 / pi;
+	return static_cast<double>(angleRadians) * 180 / pi;
 }
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder) 
-	: Component(owner, drawOrder) {}
+	: Component(owner) {
+	mDrawOrder = drawOrder;
+	mTexture = nullptr;
+	mTexHeight = 10; //TODO
+	mTexWidth = 20; //TODO
+}
 
 SpriteComponent::~SpriteComponent() {}
 

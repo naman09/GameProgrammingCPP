@@ -1,5 +1,12 @@
-#include <iostream>
+#include "Game.h"
 
-int main() {
-	std::cout << "Hello in another project same solution";
+int main(int argc, char* args[]) {
+	Game game;
+	bool success = game.Initialize();
+	if (success) {
+		game.RunLoop();
+	}
+	game.Shutdown();
+
+	return 0;
 }

@@ -9,3 +9,10 @@ Improving C++ dev skills
   - V-sync
   - Screen tearing
   - Game time vs Real time
+- [x] Chapter2
+   - Game object model
+   - Heirarchy model 
+   - Component based model
+   - Hybrid (Actor + Component) model
+   - Sprites (SDL_Image)
+   - Background Scrolling

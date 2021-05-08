@@ -16,3 +16,4 @@ Improving C++ dev skills
    - Hybrid (Actor + Component) model
    - Sprites (SDL_Image)
    - Background Scrolling
+   - How everything fits by ship example

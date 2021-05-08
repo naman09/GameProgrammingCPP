@@ -13,11 +13,8 @@ void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 }
 
 BGSpriteComponent::BGSpriteComponent(Actor* owner, int drawOrder) 
-	: SpriteComponent(owner, drawOrder) {
-	mScreenSize.x = 100.0f; //TODO
-	mScreenSize.y = 200.0f; //TODO
+	: SpriteComponent(owner, drawOrder), mScreenSize(10,20), mScrollSpeed(0.0f) {
 
-	mScrollSpeed = 10.0f;
 }
 
 void BGSpriteComponent::Update(float deltaTime) {
@@ -33,5 +30,21 @@ void BGSpriteComponent::Update(float deltaTime) {
 }
 
 void BGSpriteComponent::Draw(SDL_Renderer* renderer) {
+	// Draw each background texture
+	for (auto& bg : mBGTextures) {
+		SDL_Rect r;
+		// Assume screen size dimensions
+		r.w = static_cast<int>(mScreenSize.x);
+		r.h = static_cast<int>(mScreenSize.y);
+		// Center the rectangle around the position of the owner
+		r.x = static_cast<int>(mOwner->GetPosition().x - r.w / 2 + bg.mOffset.x);
+		r.y = static_cast<int>(mOwner->GetPosition().y - r.h / 2 + bg.mOffset.y);
 
+		// Draw this background
+		SDL_RenderCopy(renderer,
+			bg.mTexture,
+			nullptr,
+			&r
+		);
+	}
 }

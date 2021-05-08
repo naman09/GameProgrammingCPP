@@ -1,16 +1,25 @@
 #include "Actor.h"
+#include "Game.h"
 
-Actor::Actor(Game* game) : mGame(game) {
-	mPosition.x = 10.0f;
-	mPosition.y = 10.0f;
-	mRotation = 0;
-	mScale = 1;
-	mState = State::EActive;
+Actor::Actor(Game* game) 
+	: mGame(game) , mPosition(10.0f, 10.0f), mRotation(0.0f), 
+	mScale(1.0f), mState(State::EActive) {
+
+	mGame->AddActor(this);
 }
 
-Actor::~Actor() {}
+Actor::~Actor() {
+	mGame->RemoveActor(this);
+	while (!mComponents.empty()) {
+		delete mComponents.back();
+	}
+}
 
 void Actor::Update(float deltaTime) {
+	if (mState == State::EActive) {
+		UpdateComponents(deltaTime);
+		UpdateActor(deltaTime);
+	}
 }
 
 void Actor::UpdateComponents(float deltaTime) {
@@ -33,9 +42,9 @@ void Actor::AddComponent(Component* component) {
 }
 
 void Actor::RemoveComponent(Component* component) {
-	while (!mComponents.size()) {
-		delete mComponents.back();
-		mComponents.pop_back();
+	auto iter = std::find(mComponents.begin(), mComponents.end(), component);
+	if (iter != mComponents.end()) {
+		mComponents.erase(iter);
 	}
-}
+} 
 

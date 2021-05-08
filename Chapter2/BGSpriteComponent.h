@@ -10,13 +10,12 @@ class BGSpriteComponent : public SpriteComponent {
 		SDL_Texture* mTexture;
 		Vector2 mOffset;
 	};
-
 	std::vector<BGTexture> mBGTextures;
 	Vector2 mScreenSize;
 	float mScrollSpeed;
 
 public:
-	BGSpriteComponent(class Actor* owner, int drawOrder = 100);
+	BGSpriteComponent(class Actor* owner, int drawOrder = 10);
 	void Update(float deltaTime) override;
 	void Draw(SDL_Renderer* renderer) override;
 	void SetBGTextures(const std::vector<SDL_Texture*>& textures);

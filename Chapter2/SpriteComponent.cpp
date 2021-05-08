@@ -1,24 +1,22 @@
 #include "SpriteComponent.h"
+#include "Actor.h"
+#include "Game.h"
 
-void SpriteComponent::SetTexture(SDL_Texture* texture) {
-	mTexture = texture;
-	SDL_QueryTexture(texture, nullptr, nullptr, &mTexWidth, &mTexHeight);
+SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
+	: Component(owner), mDrawOrder(drawOrder), mTexture(nullptr),
+	mTexHeight(0), mTexWidth(0) {
+	mOwner->GetGame()->AddSprite(this);
+}
+	
+
+SpriteComponent::~SpriteComponent() {
+	mOwner->GetGame()->RemoveSprite(this);
 }
 
 double MathToDegrees(float angleRadians) {
 	double pi = acos(-1);
 	return static_cast<double>(angleRadians) * 180 / pi;
 }
-
-SpriteComponent::SpriteComponent(Actor* owner, int drawOrder) 
-	: Component(owner) {
-	mDrawOrder = drawOrder;
-	mTexture = nullptr;
-	mTexHeight = 10; //TODO
-	mTexWidth = 20; //TODO
-}
-
-SpriteComponent::~SpriteComponent() {}
 
 void SpriteComponent::Draw(SDL_Renderer* renderer) {
 	if (mTexture) {
@@ -36,4 +34,9 @@ void SpriteComponent::Draw(SDL_Renderer* renderer) {
 			SDL_FLIP_NONE
 		);
 	}
+}
+
+void SpriteComponent::SetTexture(SDL_Texture* texture) {
+	mTexture = texture;
+	SDL_QueryTexture(texture, nullptr, nullptr, &mTexWidth, &mTexHeight);
 }

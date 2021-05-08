@@ -17,17 +17,21 @@ public:
 	Actor(class Game* game); //dependency injection
 	virtual ~Actor();
 	
-	void Update(float deltaTime); //whats this for
-	void UpdateComponents(float deltaTime); //first this 
-	virtual void UpdateActor(float deltaTime); //then this
+	void Update(float deltaTime); //updates components then actor
+	void UpdateComponents(float deltaTime); //update components in order
+	virtual void UpdateActor(float deltaTime); 
 	void AddComponent(class Component* component); //sorts the components vector based on update order
 	void RemoveComponent(class Component* component);
 	
+	Game* GetGame() const { return mGame; }
 	State GetState() const { return mState; }
+	void SetState(const State& state) { mState = state; }
 	Vector2 GetPosition() const { return mPosition; }
-	void SetPosition(Vector2& position) { mPosition = position; }
+	void SetPosition(const Vector2& position) { mPosition = position; }
 	float GetScale() const { return mScale; }
+	void SetScale(const float& scale) { mScale = scale; }
 	float GetRotation() const { return mRotation; }
+	void SetRotation(const float& rotation) { mRotation = rotation; }
 private:
 	State mState;
 	Vector2 mPosition;

@@ -5,6 +5,7 @@
 #include <vector>
 #include "Actor.h"
 #include "SpriteComponent.h"
+#include "Ship.h"
 #include <unordered_map>
 
 class Game {
@@ -22,8 +23,8 @@ class Game {
 	std::vector<SpriteComponent*> mSprites;
 	std::unordered_map<std::string, SDL_Texture*> mFileTextureMap;
 public:
-	const int width{ 800 };
-	const int height{ 600 };
+	const float width{ 800.0f };
+	const float height{ 600.0f };
 	Uint32 mTicksCount;
 
 	Game();
@@ -33,7 +34,11 @@ public:
 	void AddActor(Actor* actor);
 	void RemoveActor(Actor* actor);
 	void AddSprite(SpriteComponent* sprite); //insert sprite in sorted draw order
+	void RemoveSprite(SpriteComponent* sprite);
 	SDL_Texture* GetTexture(const char* filename);
 	void LoadData();
+
+	//Game specific
+	Ship* mShip;
 };
 #endif

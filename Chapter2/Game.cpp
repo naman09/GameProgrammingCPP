@@ -10,6 +10,7 @@ Game::Game() {
 	mWindow = nullptr;
 	mRenderer = nullptr;
 	mUpdatingActors = false;
+	mShip = nullptr;
 }
 
 bool Game::Initialize() {
@@ -19,11 +20,11 @@ bool Game::Initialize() {
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 		return false;
 	}
-	mWindow = SDL_CreateWindow("Game Programming in c++ (chapter 1)", // window title
+	mWindow = SDL_CreateWindow("Game Programming in c++ (chapter 2)", // window title
 		100, // Top left x-coord of window
 		100, // Top left y-coord of window
-		width, // width
-		height, // height
+		static_cast<int>(width), // width
+		static_cast<int>(height), // height
 		0 // Flags (0 for no flag set)
 	);
 
@@ -43,6 +44,7 @@ bool Game::Initialize() {
 		return false;
 	}
 	IMG_Init(IMG_INIT_PNG); //To use png images 
+	LoadData();
 	return true; // success 
 }
 
@@ -71,27 +73,29 @@ SDL_Texture* Game::GetTexture(const char* filename) {
 
 void Game::LoadData() {
 	//Add a ship
-	Actor* ship = new Ship(this);
-	AddActor(ship);
+	mShip = new Ship(this);
+	mShip->SetPosition(Vector2(100.0f, 384.0f));
+	mShip->SetScale(1.5f);
 
+	//Actor for the background
 	Actor* genericActor = new Actor(this);
+	genericActor->SetPosition(Vector2(width / 2, height / 2));
+	BGSpriteComponent* bg = new BGSpriteComponent(genericActor); 
+	bg->SetScreenSize(Vector2(width, height));
+	std::vector<SDL_Texture*> bgTexs{
+		 GetTexture("Assets/Farback01.png"),
+		 GetTexture("Assets/Farback02.png")
+	};
+	bg->SetBGTextures(bgTexs);
+	bg->SetScrollSpeed(-100.0f);
 
-	BGSpriteComponent* back = new BGSpriteComponent(genericActor, 50); //drawn before others 
-	BGSpriteComponent* back2 = new BGSpriteComponent(genericActor, 50);
-
-	//different scroll speed for parallax effect
-	back->SetScrollSpeed(10);
-	back2->SetScrollSpeed(20);
-
-	SDL_Texture* bg1Tex = GetTexture("Assets/Farback01.png");
-	SDL_Texture* bg2Tex = GetTexture("Assets/Farback02.png");
-
-	//SetTextures() -- ?
-	back->SetBGTextures({ bg1Tex });
-	back2->SetBGTextures({ bg2Tex });
-	
-	mSprites.push_back(back);
-	mSprites.push_back(back2);
+	bg = new BGSpriteComponent(genericActor, 50); //drawn closer
+	bgTexs = {
+		GetTexture("Assets/Stars.png"),
+		GetTexture("Assets/Stars.png")
+	};
+	bg->SetBGTextures(bgTexs);
+	bg->SetScrollSpeed(-200.0f);//different scroll speed for parallax effect
 }
 
 void Game::Shutdown() {
@@ -114,6 +118,7 @@ void Game::ProcessInput() {
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		mIsRunning = false;
 	}
+	mShip->ProcessKeyboard(state);
 }
 
 void Game::UpdateGame() {
@@ -147,9 +152,12 @@ void Game::UpdateGame() {
 }
 
 void Game::GenerateOutput() {
+	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(mRenderer);
 	for (auto& sprite : mSprites) {
 		sprite->Draw(mRenderer);
 	}
+	SDL_RenderPresent(mRenderer);
 }
 
 void Game::RunLoop() {
@@ -170,11 +178,16 @@ void Game::AddActor(Actor* actor) {
 }
 
 void Game::RemoveActor(Actor* actor) {
-	while (!mActors.empty()) {
-		delete mActors.back();
-		mActors.pop_back(); //?
+	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
+	if (iter != mPendingActors.end()) {
+		std::iter_swap(iter, mPendingActors.end() - 1);
+		mPendingActors.pop_back();
 	}
-
+	iter = std::find(mActors.begin(), mActors.end(), actor);
+	if (iter != mActors.end()) {
+		std::iter_swap(iter, mActors.end() - 1);
+		mActors.pop_back();
+	}
 }
 
 void Game::AddSprite(SpriteComponent* sprite) {
@@ -186,4 +199,14 @@ void Game::AddSprite(SpriteComponent* sprite) {
 		}
 	}
 	mSprites.insert(iter, sprite);
+}
+
+void Game::RemoveSprite(SpriteComponent* sprite) {
+	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
+	if (iter != mSprites.end()) {
+		mSprites.erase(iter);
+	}
+	else {
+		SDL_Log("no matching sprite to remove");
+	}
 }

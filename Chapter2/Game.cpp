@@ -131,7 +131,7 @@ void Game::UpdateGame() {
 	mUpdatingActors = true;
 
 	for (Actor*& actor : mActors) {
-		actor->UpdateActor(deltaTime);
+		actor->Update(deltaTime); //this will update actor as well as its components
 	}
 	while (!mPendingActors.empty()) {
 		mActors.push_back(mPendingActors.back());
@@ -145,9 +145,6 @@ void Game::UpdateGame() {
 	}
 	for (Actor*& actor : deadActors) {
 		delete actor;
-	}
-	for (auto& sprites : mSprites) {
-		sprites->Update(deltaTime);
 	}
 }
 

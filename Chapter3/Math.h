@@ -4,8 +4,8 @@
 #include <cmath>
 
 namespace Math {
-
-
+	const float epsilon{ 0.001f };
+	bool NearZero(const float& value);
 };
 
 class Vector2 {
@@ -14,12 +14,17 @@ public:
 	float y;
 	Vector2() : x{ 0.0f }, y{ 0.0f } {}
 	Vector2(const float& _x, const float& _y) : x{ _x }, y{ _y } {}
-	//a+b
-	Vector2 operator+(const Vector2& other) {
+	
+	Vector2 operator+(const Vector2& other) { //a+b
 		return Vector2{ x + other.x,y + other.y };
 	}
-	//a-b
-	Vector2 operator-(const Vector2& other) {
+	Vector2 operator+=(const Vector2& other) { //a+=b
+		return Vector2{ x + other.x,y + other.y };
+	}
+	Vector2 operator-(const Vector2& other) { //a-b
+		return Vector2{ x - other.x,y - other.y };
+	}
+	Vector2 operator-=(const Vector2& other) { //a-=b
 		return Vector2{ x - other.x,y - other.y };
 	}
 	//Vector2 * scalar

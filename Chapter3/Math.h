@@ -50,6 +50,9 @@ public:
 		ans.Normalize();
 		return ans;
 	}
+	static float Dot(const Vector2& vec2a, const Vector2& vec2b) {
+		return vec2a.x * vec2b.x + vec2a.y * vec2b.y;
+	}
 };
 
 #endif

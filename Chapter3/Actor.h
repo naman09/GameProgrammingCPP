@@ -18,11 +18,11 @@ public:
 	void Update(const float& deltaTime);
 	void UpdateActor(const float& deltaTime);
 	void UpdateComponents(const float& deltaTime);	
+	void AddComponent(Component* component);
 	Vector2 GetPosition() const { return mPosition; }
 	float GetRotation() const { return mRotation; }
 	void SetPosition(const Vector2& position) { mPosition = position; }
 	void SetRotation(const float& rotation) { mRotation = rotation; }
-
 	Vector2 GetForward(); //returns unit vector using mPos
 };
 

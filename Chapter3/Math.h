@@ -12,6 +12,7 @@ class Vector2 {
 public:
 	float x;
 	float y;
+	static Vector2 Zero;
 	Vector2() : x{ 0.0f }, y{ 0.0f } {}
 	Vector2(const float& _x, const float& _y) : x{ _x }, y{ _y } {}
 	

@@ -4,7 +4,7 @@
 #include "Component.h"
 class MoveComponent : public Component {
 public:
-	MoveComponent(Actor* owner, int updateOrder = 100);
+	MoveComponent(Actor* owner, int updateOrder = 10);
 	void Update(const float& deltaTime) override;
 	float GetAngularSpeed() const { return mAngularSpeed; }
 	float GetForwardSpeed() const { return mForwardSpeed; }

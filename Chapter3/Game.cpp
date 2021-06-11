@@ -5,6 +5,9 @@ Game::Game() : mIsRunning{ true }, mRenderer{ nullptr }, mTickCount{ 0 } {
 
 void Game::Initialize() {}
 
+/*
+  It takes input from user
+*/
 void Game::ProcessInput() {}
 
 void Game::UpdateGame() {

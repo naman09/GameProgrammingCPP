@@ -20,3 +20,7 @@ void Actor::AddComponent(Component* component) {
 	}
 	mComponents.insert(iter, component);
 }
+
+void Actor::RemoveComponent(Component* component) {
+	//TODO
+}

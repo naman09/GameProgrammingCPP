@@ -19,6 +19,7 @@ public:
 	void UpdateActor(const float& deltaTime);
 	void UpdateComponents(const float& deltaTime);	
 	void AddComponent(Component* component);
+	void RemoveComponent(Component* component);
 	Vector2 GetPosition() const { return mPosition; }
 	float GetRotation() const { return mRotation; }
 	void SetPosition(const Vector2& position) { mPosition = position; }

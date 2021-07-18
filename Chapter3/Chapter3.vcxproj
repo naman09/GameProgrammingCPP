@@ -21,7 +21,11 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c9b6b066-0f0c-4db0-a4c0-025a082e2d74}</ProjectGuid>
+
+<!--     <ProjectGuid>{c9b6b066-0f0c-4db0-a4c0-025a082e2d74}</ProjectGuid> -->
+
+    <ProjectGuid>{1e1264f6-b5da-47bf-a3b4-e27124f37a9c}</ProjectGuid>
+
     <RootNamespace>Chapter3</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -142,7 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Actor.cpp" />
+
+<!--     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -160,7 +165,10 @@
     <ClInclude Include="Math.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="Random.h" />
-    <ClInclude Include="SpriteComponent.h" />
+    <ClInclude Include="SpriteComponent.h" /> -->
+
+    <ClCompile Include="Main.cpp" />
+
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

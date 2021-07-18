@@ -11,6 +11,7 @@ Game::Game() {
 	mRenderer = nullptr;
 	mUpdatingActors = false;
 	mShip = nullptr;
+	mPlayer = nullptr;
 }
 
 bool Game::Initialize() {
@@ -77,6 +78,10 @@ void Game::LoadData() {
 	mShip->SetPosition(Vector2(100.0f, 384.0f));
 	mShip->SetScale(1.5f);
 
+	//Add a player
+	mPlayer = new Player(this);
+	mPlayer->SetPosition(Vector2(200.0f, 384.0f));
+
 	//Actor for the background
 	Actor* genericActor = new Actor(this);
 	genericActor->SetPosition(Vector2(width / 2, height / 2));
@@ -119,6 +124,7 @@ void Game::ProcessInput() {
 		mIsRunning = false;
 	}
 	mShip->ProcessKeyboard(state);
+	mPlayer->ProcessKeyboard(state);
 }
 
 void Game::UpdateGame() {

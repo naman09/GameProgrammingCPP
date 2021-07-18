@@ -29,3 +29,9 @@ void Game::RunLoop() {
 }
 
 void Game::Shutdown() {}
+
+void Game::AddActor(Actor* actor) {}
+
+void Game::RemoveActor(Actor* actor) {
+	//TODO
+}

@@ -7,6 +7,7 @@
 #include "SpriteComponent.h"
 #include "Ship.h"
 #include <unordered_map>
+#include "Player.h"
 
 class Game {
 	void ProcessInput();
@@ -40,5 +41,6 @@ public:
 
 	//Game specific
 	Ship* mShip;
+	Player* mPlayer;
 };
 #endif

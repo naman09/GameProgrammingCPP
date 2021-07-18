@@ -15,6 +15,7 @@ Actor::~Actor() {
 	}
 }
 
+
 void Actor::Update(float deltaTime) {
 	if (mState == State::EActive) {
 		UpdateComponents(deltaTime);

@@ -11,6 +11,7 @@ Ship::Ship(Game* game) : Actor(game), mRightSpeed(0.0f), mDownSpeed(0.0f) {
 		game->GetTexture("Assets/Ship04.png"),
 	};
 	asc->SetAnimTextures(anims);
+	asc->SetAnimRun(true);
 }
 
 void Ship::UpdateActor(float deltaTime) {
